@@ -1,3 +1,9 @@
+html { height: 100% }
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
 .registerpage-underline {
     height: 5px;
     border-top: 0;
@@ -14,9 +20,13 @@
 }
 
 .products-table  div:nth-child(odd) {
-    background-color: red;
+
 }
 
 .product-info:last-child hr {
     display: none;
+}
+
+.navbar-inverse a.btn-link {
+    color: #fff;
 }
