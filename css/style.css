@@ -4,3 +4,19 @@
     background: #c4e17f;
     border-radius: 5px;
 }
+
+.products-table {
+    display: table;
+}
+
+.product-info {
+    display: table-row;
+}
+
+.products-table  div:nth-child(odd) {
+    background-color: red;
+}
+
+.product-info:last-child hr {
+    display: none;
+}
