@@ -108,7 +108,16 @@
 
     <!-- site scripts -->
     <script type="text/template" id="product-listing-template">
-
+        <div class="product-info">
+            <h4 style="display: inline-block">{name}</h4>
+            <a class="btn btn-xs btn-link" id="add-to-cart-btn" href="#" data-id="{id}" role="button">Add to cart</a>
+            <p class="small">
+                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: {mfg-data}
+                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: {exp-date}
+            </p>
+            <p>{descr}</p>
+            <hr>
+        </div>
     </script>
     <script src="js/vendor/jquery-1.11.0.min.js"></script>
     <script src="js/vendor/bootstrap.js"></script>

@@ -45,20 +45,22 @@
 <div class="container">
 
     <div class="page-header">
-        <h3>Product Listings</h3>
+        <h3>My Products</h3>
     </div>
     <div class="row">
-        <div class="col-sm-4 col-sm-offset-0 col-sm-push-8" style="border:1px solid #ccc">
-            <div id="map-canvas"></div>
-        </div>
 
-        <div class="col-sm-7 col-sm-pull-4">
+        <div class="col-sm-8 col-sm-offset-2">
 
             <div class="products-table">
 
                 <div class="product-info">
                     <h4 style="display: inline-block">Product Name</h4>
-                    <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
+                    <a class="btn btn-xs btn-link" href="#" role="button">Edit</a>
+                    <div style="border:1px solid #ccc; display:inline-block" class="pull-right">
+                        <strong>Inventory</strong>
+                        <p>Sold: 12<br>
+                        Left: 100</p>
+                    </div>
                     <p class="small">
                         <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
                         <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
@@ -69,29 +71,7 @@
 
                 <div class="product-info">
                     <h4 style="display: inline-block">Product Name</h4>
-                    <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
-                    <p class="small">
-                        <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
-                        <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
-                    </p>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                    <hr>
-                </div>
-
-                <div class="product-info">
-                    <h4 style="display: inline-block">Product Name</h4>
-                    <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
-                    <p class="small">
-                        <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
-                        <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
-                    </p>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                    <hr>
-                </div>
-
-                <div class="product-info">
-                    <h4 style="display: inline-block">Product Name</h4>
-                    <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
+                    <a class="btn btn-xs btn-link" href="#" role="button">Edit</a>
                     <p class="small">
                         <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
                         <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
@@ -110,7 +90,7 @@
 <script type="text/template" id="product-listing-template">
     <div class="product-info">
         <h4 style="display: inline-block">{name}</h4>
-        <a class="btn btn-xs btn-link" href="#" data-id="{id}" role="button">Add to cart</a>
+        <a class="btn btn-xs btn-link" id="edit-product-btn" href="#" data-id="{id}" role="button">Edit</a>
         <p class="small">
             <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: {mfg-data}
             <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: {exp-date}
