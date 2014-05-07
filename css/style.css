@@ -36,3 +36,12 @@ body {
 .navbar-inverse a.btn-link {
     color: #fff;
 }
+
+.dialog-body {
+    padding: 22px;
+    margin: 22px auto;
+    position: relative;
+    max-width: 500px;
+    width: auto;
+    background: #ffffff;
+}

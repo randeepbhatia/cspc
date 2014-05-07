@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/bootstrap-theme.css">
+    <link rel="stylesheet" href="../css/mpopup.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/style.css">
     <style>
@@ -25,11 +26,74 @@
         .product-info{
             margin-top: 8px;
         }
+
+        a[data-action="edit"]{
+            color: #000;
+            text-decoration: none;
+        }
     </style>
 
     <script src="../js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
 <body>
+
+<!-- add/edit product dialog-->
+<div id="add-product-dialog" class="mfp-hide container dialog-body">
+    <div class="row">
+        <div class="page-header text-center" style="margin-top: 0px">
+            <h4 class="dialog-header"><span id="dialog-action">Add/Edit</span> Product</h4>
+        </div>
+
+            <div class="col-xs-12">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="prodName" class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="prodName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mfdDate" class="col-sm-3 control-label">Mfg. Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" id="mfdDate" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expDate" class="col-sm-3 control-label">Exp. Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" id="expDate" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inventorySold" class="col-sm-3 control-label">Num Sold</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="inventorySold" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inventoryLeft" class="col-sm-3 control-label">Num Left</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="inventoryLeft" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="descr" class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="descr" placeholder=""></textarea>
+                        </div>
+                    </div>
+                </form>
+                <div class="text-center">
+                    <button type="button" class="btn btn-success btn-sm" data-type="save">Save</button>
+                    <button type="button" class="btn btn-danger btn-sm" data-type="cancel">Cancel</button>
+                </div>
+
+            </div>
+    </div>
+</div>
+
+
+
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
@@ -45,7 +109,12 @@
             <a class="navbar-brand" href="#">CSPC</a>
         </div>
         <div class="navbar-collapse collapse">
-            <a href="cart.html" class="btn btn-link navbar-btn navbar-right"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart <span class="badge">2</span></a>
+            <a href="#" data-mfp-src="#add-product-dialog" data-action="add" class="dialog navbar-right navbar-btn btn btn-primary hidden-xs">
+                <span class="glyphicon glyphicon-plus"></span> Add New Product
+            </a>
+            <a href="#" data-mfp-src="#add-product-dialog" data-action="add" class="dialog navbar-right navbar-btn btn btn-primary btn-block visible-xs">
+                <span class="glyphicon glyphicon-plus"></span> Add New Product
+            </a>
         </div><!--/.navbar-collapse end -->
     </div>
 </div>
@@ -56,14 +125,13 @@
     <div class="page-header">
         <h3>My Products</h3>
     </div>
-    <div class="row">
 
+    <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
 
             <div class="products-table">
-
                 <!-- thead -->
-                <div style="table-row; font-size: 14px; font-weight: bold; border-bottom: 2px solid #ccc; margin-bottom: 10px;">
+                <div style="display:table-row; font-size: 14px; font-weight: bold; border-bottom: 2px solid #ccc; margin-bottom: 10px;">
                     <div class="col-sm-8 tablecell">
                         Product Info
                     </div>
@@ -79,38 +147,39 @@
                 <!-- tbody -->
                 <div class="product-info">
                     <div class="col-sm-8 tablecell">
-                        <strong>Product Name</strong>
+                        <strong id="prod_name">Product Name</strong>
                         <p class="small">
-                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
-                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
+                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">12 dec</span>
+                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> <span id="exp_date">12 dec</span>
                         </p>
-                        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                        <p id="description">Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
                     </div>
                     <div class="col-sm-3 tablecell">
-                        <p>Sold: 12<br>
-                            Left: 100
+                        <p>Sold: <span id="num_sold">12</span><br>
+                            Left: <span id="num_left">100</span><br>
                         </p>
                     </div>
                     <div class="col-sm-1 tablecell">
-                        <button type="button" name="edit" data-id="{id}" class="btn btn-sm"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="#" data-id="{id}" data-action="edit" data-mfp-src="#add-product-dialog" class="btn btn-sm dialog"><span class="glyphicon glyphicon-pencil"></span></a>
                     </div>
                 </div>
 
                 <div class="product-info">
                     <div class="col-sm-8 tablecell">
-                        <strong>Product Name</strong>
+                        <strong id="prod_name">Product Name</strong>
                         <p class="small">
-                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
-                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
+                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">12 dec</span>
+                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> <span id="exp_date">12 dec</span>
                         </p>
-                        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                        <p id="description">Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
                     </div>
                     <div class="col-sm-3 tablecell">
-                        <p>Sold: 12<br>
-                            Left: 100</p>
+                        <p>Sold: <span id="num_sold">12</span><br>
+                            Left: <span id="num_left">100</span><br>
+                        </p>
                     </div>
                     <div class="col-sm-1 tablecell">
-                        <button type="button" name="edit" data-id="{id}" class="btn btn-sm"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <a href="#" data-id="{id}" data-action="edit" data-mfp-src="#add-product-dialog" class="btn btn-sm dialog"><span class="glyphicon glyphicon-pencil"></span></a>
                     </div>
                 </div>
 
@@ -124,28 +193,97 @@
 <script type="text/template" id="product-listing-template">
     <div class="product-info">
         <div class="col-sm-8 tablecell">
-            <strong>{name}</strong>
+            <strong id="prod_name">{name}</strong>
             <p class="small">
-                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: {mfg-data}
-                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: {exp-date}
+                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">{mfg-data}</span>
+                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> <span id="exp_date">{exp-data}</span>
             </p>
-            <p>{descr}</p>
+            <p id="description">{description}</p>
         </div>
         <div class="col-sm-3 tablecell">
-            <p>
-                Sold: {sold}
-                <br>
-                Left: {left}
+            <p>Sold: <span id="num_sold">{sold}</span><br>
+                Left: <span id="num_left">{left}</span><br>
             </p>
         </div>
         <div class="col-sm-1 tablecell">
-            <button type="button" name="edit" data-id="{id}" class="btn btn-sm"><span class="glyphicon glyphicon-pencil"></span></button>
+            <a href="#" data-id="{id}" data-action="edit" data-mfp-src="#add-product-dialog" class="btn btn-sm dialog"><span class="glyphicon glyphicon-pencil"></span></a>
         </div>
     </div>
 </script>
 <script src="../js/vendor/jquery-1.11.0.min.js"></script>
 <script src="../js/vendor/bootstrap.js"></script>
+<script src="../js/vendor/mpopup.js"></script>
 <script src="../js/plugins.js"></script>
 <script src="../js/main.js"></script>
+<script>
+    $(function(){
+        //initialize page
+        $('.dialog').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY:'auto',
+            closeBtnInside: true,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-slide-bottom',
+            callbacks: {
+                elementParse: function(e){
+                    var targetAction = $(e.el[0]).data('action'),
+                        $productInfoContainer;
+                    console.log(e);
+                    if(targetAction === 'add'){
+                        $('#dialog-action').html('Add');
+                    } else if (targetAction === 'edit'){
+                        $('#dialog-action').html('Edit');
+                        $productInfoContainer = $(e.el[0]).closest('.product-info');
+                        $('#prodName').val($productInfoContainer.find('#prod_name').html() || "");
+                        $('#mfgDate').val($productInfoContainer.find('#mfg_date').html() || "");
+                        $('#expDate').val($productInfoContainer.find('#exp_date').html() || "");
+                        $('#inventorySold').val($productInfoContainer.find('#num_sold').html() || "");
+                        $('#inventoryLeft').val($productInfoContainer.find('#num_left').html() || "");
+                        $('#descr').val($productInfoContainer.find('#description').html() || "");
+                    }
+
+
+                }
+            }
+        });
+
+        $('#add-product-dialog button[type="button"]').on('click', function(e){
+            var targetType = $(e.target).data('type'),
+                prodName, mfgDate, expDate, numSold, numLeft, descr, $triggerElem, $popupElem, $productInfoContainer;
+
+            if(targetType === 'cancel'){
+                $.magnificPopup.instance.close();
+            } else if(targetType === 'save'){
+                $triggerElem = $($.magnificPopup.instance.currItem.el);
+                $productInfoContainer = $triggerElem.closest('.product-info');
+                $popupElem = $($.magnificPopup.instance.currItem.inlineElement);
+
+                prodName = $popupElem.find('#prodName').val();
+                mfgDate = $popupElem.find('#mfdDate').val();
+                expDate = $popupElem.find('#expDate').val();
+                numSold = parseInt($popupElem.find('#inventorySold').val(), 10);
+                numLeft = parseInt($popupElem.find('#inventoryLeft').val(), 10);
+                descr = $popupElem.find('#descr').val();
+
+                if($triggerElem.data('action') === 'add'){
+                    // add skill case
+                    //self._addSkillTile(skillName, skillPrct);
+                } else if($triggerElem.data('action') === 'edit'){
+                    $productInfoContainer.find('#prod_name').html(prodName);
+                    $productInfoContainer.find('#mfg_date').html(mfgDate);
+                    $productInfoContainer.find('#exp_date').html(expDate);
+                    $productInfoContainer.find('#num_sold').html(numSold);
+                    $productInfoContainer.find('#num_left').html(numLeft);
+                    $productInfoContainer.find('#description').html(descr);
+                }
+
+                $.magnificPopup.instance.close();
+            }
+        });
+    });
+</script>
 </body>
 </html>
