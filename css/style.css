@@ -13,10 +13,16 @@ body {
 
 .products-table {
     display: table;
+    border-collapse: collapse; /* needed for borders on table/table-row to work */
 }
 
 .product-info {
     display: table-row;
+    border-bottom: 1px solid #ccc;
+}
+
+.tablecell {
+    display: table-cell;
 }
 
 .products-table  div:nth-child(odd) {

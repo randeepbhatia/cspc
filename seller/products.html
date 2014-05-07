@@ -15,7 +15,16 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        #map-canvas { height: 365px; }
+        button[name="edit"],
+        button:active[name="edit"],
+        button:focus[name="edit"] {
+            background: none;
+            outline: none;
+        }
+
+        .product-info{
+            margin-top: 8px;
+        }
     </style>
 
     <script src="../js/vendor/modernizr-2.6.2.min.js"></script>
@@ -53,31 +62,56 @@
 
             <div class="products-table">
 
-                <div class="product-info">
-                    <h4 style="display: inline-block">Product Name</h4>
-                    <a class="btn btn-xs btn-link" href="#" role="button">Edit</a>
-                    <div style="border:1px solid #ccc; display:inline-block" class="pull-right">
-                        <strong>Inventory</strong>
-                        <p>Sold: 12<br>
-                        Left: 100</p>
+                <!-- thead -->
+                <div style="table-row; font-size: 14px; font-weight: bold; border-bottom: 2px solid #ccc; margin-bottom: 10px;">
+                    <div class="col-sm-8 tablecell">
+                        Product Info
                     </div>
-                    <p class="small">
-                        <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
-                        <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
-                    </p>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                    <hr>
+                    <div class="col-sm-3 tablecell">
+                        Inventory
+                    </div>
+                    <div class="col-sm-1 tablecell center-block">
+                        Edit
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <!-- tbody -->
+                <div class="product-info">
+                    <div class="col-sm-8 tablecell">
+                        <strong>Product Name</strong>
+                        <p class="small">
+                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
+                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
+                        </p>
+                        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                    </div>
+                    <div class="col-sm-3 tablecell">
+                        <p>Sold: 12<br>
+                            Left: 100
+                        </p>
+                    </div>
+                    <div class="col-sm-1 tablecell">
+                        <button type="button" name="edit" data-id="{id}" class="btn btn-sm"><span class="glyphicon glyphicon-pencil"></span></button>
+                    </div>
                 </div>
 
                 <div class="product-info">
-                    <h4 style="display: inline-block">Product Name</h4>
-                    <a class="btn btn-xs btn-link" href="#" role="button">Edit</a>
-                    <p class="small">
-                        <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
-                        <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
-                    </p>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                    <hr>
+                    <div class="col-sm-8 tablecell">
+                        <strong>Product Name</strong>
+                        <p class="small">
+                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
+                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
+                        </p>
+                        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                    </div>
+                    <div class="col-sm-3 tablecell">
+                        <p>Sold: 12<br>
+                            Left: 100</p>
+                    </div>
+                    <div class="col-sm-1 tablecell">
+                        <button type="button" name="edit" data-id="{id}" class="btn btn-sm"><span class="glyphicon glyphicon-pencil"></span></button>
+                    </div>
                 </div>
 
             </div>
@@ -89,14 +123,24 @@
 <!-- site scripts -->
 <script type="text/template" id="product-listing-template">
     <div class="product-info">
-        <h4 style="display: inline-block">{name}</h4>
-        <a class="btn btn-xs btn-link" id="edit-product-btn" href="#" data-id="{id}" role="button">Edit</a>
-        <p class="small">
-            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: {mfg-data}
-            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: {exp-date}
-        </p>
-        <p>{descr}</p>
-        <hr>
+        <div class="col-sm-8 tablecell">
+            <strong>{name}</strong>
+            <p class="small">
+                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: {mfg-data}
+                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: {exp-date}
+            </p>
+            <p>{descr}</p>
+        </div>
+        <div class="col-sm-3 tablecell">
+            <p>
+                Sold: {sold}
+                <br>
+                Left: {left}
+            </p>
+        </div>
+        <div class="col-sm-1 tablecell">
+            <button type="button" name="edit" data-id="{id}" class="btn btn-sm"><span class="glyphicon glyphicon-pencil"></span></button>
+        </div>
     </div>
 </script>
 <script src="../js/vendor/jquery-1.11.0.min.js"></script>
