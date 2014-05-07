@@ -287,6 +287,13 @@
                     console.log(e);
                     if(targetAction === 'add'){
                         $('#dialog-action').html('Add');
+                        $('#prodName').val("");
+                        $('#mfgDate').val("");
+                        $('#expDate').val("");
+                        $('#inventorySold').val("");
+                        $('#inventoryLeft').val("");
+                        $('#descr').val("");
+
                     } else if (targetAction === 'edit'){
                         $('#dialog-action').html('Edit');
                         $productInfoContainer = $(e.el[0]).closest('.product-info');
