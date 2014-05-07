@@ -149,8 +149,8 @@
                     <div class="col-sm-8 tablecell">
                         <strong id="prod_name">Product Name</strong>
                         <p class="small">
-                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">12 dec</span>
-                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> <span id="exp_date">12 dec</span>
+                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg Date: <span id="mfg_date">12 dec</span>
+                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">12 dec</span>
                         </p>
                         <p id="description">Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
                     </div>
@@ -168,8 +168,8 @@
                     <div class="col-sm-8 tablecell">
                         <strong id="prod_name">Product Name</strong>
                         <p class="small">
-                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">12 dec</span>
-                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> <span id="exp_date">12 dec</span>
+                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg Date: <span id="mfg_date">12 dec</span>
+                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">12 dec</span>
                         </p>
                         <p id="description">Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
                     </div>
@@ -195,8 +195,8 @@
         <div class="col-sm-8 tablecell">
             <strong id="prod_name">{name}</strong>
             <p class="small">
-                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">{mfg-data}</span>
-                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> <span id="exp_date">{exp-data}</span>
+                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">{mfg_date}</span>
+                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">{exp_date}</span>
             </p>
             <p id="description">{description}</p>
         </div>
@@ -218,37 +218,7 @@
 <script>
     $(function(){
         //initialize page
-        $('.dialog').magnificPopup({
-            type: 'inline',
-            fixedContentPos: false,
-            fixedBgPos: true,
-            overflowY:'auto',
-            closeBtnInside: true,
-            midClick: true,
-            removalDelay: 300,
-            mainClass: 'my-mfp-slide-bottom',
-            callbacks: {
-                elementParse: function(e){
-                    var targetAction = $(e.el[0]).data('action'),
-                        $productInfoContainer;
-                    console.log(e);
-                    if(targetAction === 'add'){
-                        $('#dialog-action').html('Add');
-                    } else if (targetAction === 'edit'){
-                        $('#dialog-action').html('Edit');
-                        $productInfoContainer = $(e.el[0]).closest('.product-info');
-                        $('#prodName').val($productInfoContainer.find('#prod_name').html() || "");
-                        $('#mfgDate').val($productInfoContainer.find('#mfg_date').html() || "");
-                        $('#expDate').val($productInfoContainer.find('#exp_date').html() || "");
-                        $('#inventorySold').val($productInfoContainer.find('#num_sold').html() || "");
-                        $('#inventoryLeft').val($productInfoContainer.find('#num_left').html() || "");
-                        $('#descr').val($productInfoContainer.find('#description').html() || "");
-                    }
-
-
-                }
-            }
-        });
+        attachPopup($('.dialog'));
 
         $('#add-product-dialog button[type="button"]').on('click', function(e){
             var targetType = $(e.target).data('type'),
@@ -269,8 +239,14 @@
                 descr = $popupElem.find('#descr').val();
 
                 if($triggerElem.data('action') === 'add'){
-                    // add skill case
-                    //self._addSkillTile(skillName, skillPrct);
+                    addNewProduct({
+                        name: prodName,
+                        mfg_date: mfgDate,
+                        exp_date: expDate,
+                        sold: numSold,
+                        left: numLeft,
+                        description: descr
+                    });
                 } else if($triggerElem.data('action') === 'edit'){
                     $productInfoContainer.find('#prod_name').html(prodName);
                     $productInfoContainer.find('#mfg_date').html(mfgDate);
@@ -284,6 +260,50 @@
             }
         });
     });
+
+    function addNewProduct(prodData){
+        var template = $('#product-listing-template').html();
+        var html = strSubstitute(template,prodData);
+        //$(".products-table").append(html);
+        var newNode = $(html).appendTo($(".products-table"));
+        attachPopup(newNode.find('a[class~=dialog]'));
+
+    }
+
+    function attachPopup($elem){
+        $elem.magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY:'auto',
+            closeBtnInside: true,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-slide-bottom',
+            callbacks: {
+                elementParse: function(e){
+                    var targetAction = $(e.el[0]).data('action'),
+                            $productInfoContainer;
+                    console.log(e);
+                    if(targetAction === 'add'){
+                        $('#dialog-action').html('Add');
+                    } else if (targetAction === 'edit'){
+                        $('#dialog-action').html('Edit');
+                        $productInfoContainer = $(e.el[0]).closest('.product-info');
+                        $('#prodName').val($productInfoContainer.find('#prod_name').html() || "");
+                        $('#mfgDate').val($productInfoContainer.find('#mfg_date').html() || "");
+                        $('#expDate').val($productInfoContainer.find('#exp_date').html() || "");
+                        $('#inventorySold').val($productInfoContainer.find('#num_sold').html() || "");
+                        $('#inventoryLeft').val($productInfoContainer.find('#num_left').html() || "");
+                        $('#descr').val($productInfoContainer.find('#description').html() || "");
+                    }
+
+
+                }
+            }
+        });
+    }
+
 </script>
 </body>
 </html>
