@@ -33,9 +33,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">CSPC</a>
+          <a class="navbar-brand" href="index.html">ALWAYSTOCKED.COM</a>
         </div>
         <div class="navbar-collapse collapse">
+            <a href="#" data-action="logout" class="navbar-right navbar-btn btn btn-warning hidden-xs signout">
+                <span class="glyphicon glyphicon-off"></span> Sign out
+            </a>
+            <a href="#" data-action="logout" class="navbar-right navbar-btn btn btn-warning btn-block visible-xs signout">
+                <span class="glyphicon glyphicon-off"></span> Sign out
+            </a>
+
             <a href="cart.html" class="btn btn-link navbar-btn navbar-right"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart <span class="badge">2</span></a>
         </div><!--/.navbar-collapse end -->
       </div>
@@ -122,6 +129,11 @@
     <script src="js/vendor/jquery-1.11.0.min.js"></script>
     <script src="js/vendor/bootstrap.js"></script>
     <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        redirectAuthFailToHome();
+    </script>
     <script src="js/cspc-gmaps.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKp_kCOibTUmEvKprfaSBsUJu5GXy3tlg&sensor=false"></script>
     <script type="text/javascript">
