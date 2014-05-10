@@ -1,5 +1,7 @@
 var CSPC = CSPC || {};
-CSPC.restUrl = "";
+
+//---------- config ------------
+CSPC.restUrl = "http://54.220.241.101:8080/cpsc/rest/";
 CSPC.authFailRedirectOn = false;
 
 $.cookie.json = true;
@@ -7,6 +9,7 @@ $.cookie.defaults = {
     expires: 1,
     path: '/'
 };
+//---------- config end ------------
 
 function log(){
     arguments.length && console && console.log(arguments);
@@ -58,6 +61,22 @@ function _doLogin(data){
     log('loggin user IN. Result = ' + $.cookie('uLogonData') !== undefined);
 }
 
+function doRegister(formId){
+    var registerUrl = CSPC.restUrl + "register";
+
+    function onSuccess(d){
+        log("register success", d);
+    }
+
+    function onError(e){
+        log("register success", e);
+    }
+
+    if(formId){
+        $.post( registerUrl, $("#"+formId).serialize()).done(onSuccess).fail(onError);
+    }
+}
+
 function isLoggedIn(){
     log("requested user login status. returning=" + $.cookie('uLogonData') !== undefined);
     return $.cookie('uLogonData') !== undefined;
@@ -94,4 +113,36 @@ function redirectAuthFailToHome(){
     if(CSPC.authFailRedirectOn === true && !isLoggedIn()){
         redirect(($.cookie('sitepath') || '') + 'index.html', true);
     }
+}
+
+function addToCart(prodInfo){
+    !prodInfo && (prodInfo={name:'abc'});
+    var cart = $.cookie('cart') || {items : []};
+    if(cart.items.indexOf(prodInfo.name) === -1){
+        cart.items.push(prodInfo.name);
+    }
+
+    $('.cartcount').html(cart.items.length);
+    $.cookie('cart', cart);
+}
+
+function deleteFromCart(prodId){
+
+}
+
+function getCartItemsCount(){
+    var cart = $.cookie('cart');
+    var cartCount = 0;
+    if(cart && cart.items){
+        cartCount = cart.items.length;
+    }
+    return cartCount;
+}
+
+function updateCartCountLable(){
+    $('.cartcount').html(getCartItemsCount());
+}
+
+function clearCart(){
+    $.removeCookie('cart');
 }

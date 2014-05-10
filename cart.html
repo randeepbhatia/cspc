@@ -47,7 +47,7 @@
             <a href="#" data-action="logout" class="navbar-right navbar-btn btn btn-warning btn-block visible-xs signout">
                 <span class="glyphicon glyphicon-off"></span> Sign out
             </a>
-            <a href="cart.html" class="btn btn-link navbar-btn navbar-right"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart <span class="badge">2</span></a>
+            <a href="cart.html" class="btn btn-link navbar-btn navbar-right"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart <span class="badge cartcount">0</span></a>
 
         </div><!--/.navbar-collapse end -->
     </div>
@@ -57,8 +57,9 @@
 <div class="container">
     <div class="page-header">
         <h3>Product Cart</h3>
+        <a class="btn btn-xs btn-link" id="clear-cart-btn" href="javascript:void(0)" role="button">Clear Cart</a>
     </div>
-    <div class="row">
+    <div class="row cartrow">
         <div class="col-sm-7">
 
             <div class="panel panel-default">
@@ -77,7 +78,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
 
                     <tr>
                         <td>iBuprofen</td>
@@ -140,6 +140,11 @@
         </div>
 
     </div> <!-- row end -->
+    <div class="row emptycartmsg">
+        <div class="col-xs-2 col-xs-offset-2 bg-danger text-center text-muted">
+            <h3>Cart is empty</h3>
+            </div>
+    </div>
 </div>    <!-- container end -->
 
 <!-- site scripts -->
@@ -163,14 +168,21 @@
 <script src="js/common.js"></script>
 
 <script type="text/javascript">
+    // if the user is logged out, redirect to home
     redirectAuthFailToHome();
+
+    $('#clear-cart-btn').on('click', function(){
+        clearCart();
+        updateCartCountLable();
+        checkNToggleEmptyCartMsg();
+    });
 
     $('#cart-table').delegate("td > button", "click", function(event){
         var $this = $(this);
         deleteCartItem($this.data("id"), $this.closest('tr'));
     });
 
-    function addCartItem(data){
+    function insertCartItemOnPage(data){
         var template = $('#cart-item-template').html();
         var html = strSubstitute(template,data);
         $("#cart-table > tbody").append(html);
@@ -178,8 +190,36 @@
 
     function deleteCartItem(id, row){
         console.log("delete cart item=" + id);
+        deleteFromCart(id);
         row.remove();
     }
+
+    function checkNToggleEmptyCartMsg() {
+        if(getCartItemsCount() > 0){
+            $('.cartrow').show();
+            $('.emptycartmsg').hide();
+        } else {
+            $('.cartrow').hide();
+            $('.emptycartmsg').show();
+        }
+    }
+
+    $(function(){
+        checkNToggleEmptyCartMsg();
+        var cart = $.cookie('cart');
+        if(cart && cart.items){
+            insertCartItemOnPage({
+                name:'',
+                price:'',
+                quantity:'',
+                total: '',
+                id: ''
+            });
+        }
+
+    });
+
+
 </script>
 </body>
 </html>

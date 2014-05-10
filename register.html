@@ -58,45 +58,37 @@
 
           <div class="row">
               <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-                  <form role="form">
+                  <form role="form" id="registerForm">
                       <h2>Register as Buyer <small>Sign up for your buyer account</small></h2>
                       <hr class="registerpage-underline">
+                      <div class="form-group">
+                          <input type="text" name="fullName" id="fullName" class="form-control input-lg" placeholder="Full Name" tabindex="1">
+                      </div>
+                      <div class="form-group">
+                          <input type="text" name="address" id="address" class="form-control input-lg" placeholder="Shipping Address" tabindex="2">
+                      </div>
+                      <div class="form-group">
+                          <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="3">
+                      </div>
+
                       <div class="row">
                           <div class="col-xs-6 col-sm-6 col-md-6">
                               <div class="form-group">
-                                  <input type="text" name="first_name" id="first_name" class="form-control input-lg" placeholder="First Name" tabindex="1">
+                                  <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" tabindex="4">
                               </div>
                           </div>
                           <div class="col-xs-6 col-sm-6 col-md-6">
                               <div class="form-group">
-                                  <input type="text" name="last_name" id="last_name" class="form-control input-lg" placeholder="Last Name" tabindex="2">
+                                  <input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-lg" placeholder="Confirm Password" tabindex="5">
                               </div>
                           </div>
                       </div>
-                      <div class="form-group">
-                          <input type="text" name="ship_address" id="ship_address" class="form-control input-lg" placeholder="Shipping Address" tabindex="3">
-                      </div>
-                      <div class="form-group">
-                          <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4">
-                      </div>
-                      <div class="row">
-                          <div class="col-xs-6 col-sm-6 col-md-6">
-                              <div class="form-group">
-                                  <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" tabindex="5">
-                              </div>
-                          </div>
-                          <div class="col-xs-6 col-sm-6 col-md-6">
-                              <div class="form-group">
-                                  <input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-lg" placeholder="Confirm Password" tabindex="6">
-                              </div>
-                          </div>
-                      </div>
+                      <input type="hidden" name="accountType" id="accountType" class="form-control" value="b">
+                      <input type="hidden" name="companyName" id="companyName" class="form-control" value="null">
 
                       <hr class="registerpage-underline">
                       <div class="row">
-                          <div class="col-xs-3 col-md-3"></div>
-                          <div class="col-xs-6 col-md-6"><input type="submit" value="Register" class="btn btn-primary btn-block btn-lg" tabindex="7"></div>
-                          <div class="col-xs-3 col-md-3"></div>
+                          <div class="col-xs-6 col-xs-offset-3"><input type="button" id="registerbtn" value="Register" class="btn btn-primary btn-block btn-lg" tabindex="6"></div>
                       </div>
                   </form>
               </div>
@@ -111,5 +103,8 @@
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
     <script src="js/common.js"></script>
+    <script>
+
+    </script>
     </body>
 </html>

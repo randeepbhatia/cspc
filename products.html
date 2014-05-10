@@ -43,7 +43,7 @@
                 <span class="glyphicon glyphicon-off"></span> Sign out
             </a>
 
-            <a href="cart.html" class="btn btn-link navbar-btn navbar-right"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart <span class="badge">2</span></a>
+            <a href="cart.html" class="btn btn-link navbar-btn navbar-right"><span class="glyphicon glyphicon-shopping-cart"></span> View Cart <span class="badge cartcount">0</span></a>
         </div><!--/.navbar-collapse end -->
       </div>
     </div>
@@ -65,46 +65,42 @@
 
                     <div class="product-info">
                         <h4 style="display: inline-block">Product Name</h4>
-                        <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
+                        <a class="btn btn-xs btn-link addtocart" href="#" role="button">Add to cart</a>
                         <p class="small">
                             <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
                             <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
                         </p>
                         <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                        <hr>
                     </div>
 
                     <div class="product-info">
                         <h4 style="display: inline-block">Product Name</h4>
-                        <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
+                        <a class="btn btn-xs btn-link addtocart" href="#" role="button">Add to cart</a>
                         <p class="small">
                             <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
                             <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
                         </p>
                         <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                        <hr>
                     </div>
 
                     <div class="product-info">
                         <h4 style="display: inline-block">Product Name</h4>
-                        <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
+                        <a class="btn btn-xs btn-link addtocart" href="#" role="button">Add to cart</a>
                         <p class="small">
                             <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
                             <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
                         </p>
                         <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                        <hr>
                     </div>
 
                     <div class="product-info">
                         <h4 style="display: inline-block">Product Name</h4>
-                        <a class="btn btn-xs btn-link" href="#" role="button">Add to cart</a>
+                        <a class="btn btn-xs btn-link addtocart" href="#" role="button">Add to cart</a>
                         <p class="small">
                             <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: 12 dec
                             <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: 1 dec
                         </p>
                         <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                        <hr>
                     </div>
 
                 </div>
@@ -117,13 +113,12 @@
     <script type="text/template" id="product-listing-template">
         <div class="product-info">
             <h4 style="display: inline-block">{name}</h4>
-            <a class="btn btn-xs btn-link" id="add-to-cart-btn" href="#" data-id="{id}" role="button">Add to cart</a>
+            <a class="btn btn-xs btn-link addtocart" id="add-to-cart-btn" href="javascript:void(0)" data-id="{id}" role="button">Add to cart</a>
             <p class="small">
                 <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: {mfg-data}
                 <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: {exp-date}
             </p>
             <p>{descr}</p>
-            <hr>
         </div>
     </script>
     <script src="js/vendor/jquery-1.11.0.min.js"></script>
@@ -138,6 +133,11 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKp_kCOibTUmEvKprfaSBsUJu5GXy3tlg&sensor=false"></script>
     <script type="text/javascript">
         google.maps.event.addDomListener(window, 'load', initializeMapApi);
+
+        $( ".products-table" ).on( "click", ".addtocart", function() {
+            var parent = $( this ).closest( "product-info" );
+            addToCart(parent.data('prodData'));
+        });
     </script>
     </body>
 </html>
