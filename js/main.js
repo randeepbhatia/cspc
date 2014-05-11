@@ -34,11 +34,12 @@ function strSubstitute(str, sub) {
     });
 };
 
-function doAjaxSignin(data){
+function doLogin(data){
     var loginUrl = CSPC.restUrl + "login";
 
     function onSuccess(d){
-        _doLogin(d);
+        $.cookie('uLogonData', data);
+        log('loggin user IN. Result = ' + $.cookie('uLogonData') !== undefined);
         data.onSuccess(d);
     }
 
@@ -56,11 +57,6 @@ function doLogout(){
     log('loggin user out. Result = ' + $.cookie('uLogonData') === undefined);
 }
 
-function _doLogin(data){
-    $.cookie('uLogonData', data);
-    log('loggin user IN. Result = ' + $.cookie('uLogonData') !== undefined);
-}
-
 function doRegister(formId){
     var registerUrl = CSPC.restUrl + "register";
 
@@ -75,6 +71,14 @@ function doRegister(formId){
     if(formId){
         $.post( registerUrl, $("#"+formId).serialize()).done(onSuccess).fail(onError);
     }
+}
+
+function getAllProducts(onSuccess){
+    $.get( CSPC.restUrl + "products", onSuccess);
+}
+
+function placeOrder(){
+    $.post(CSPC.restUrl);
 }
 
 function isLoggedIn(){
@@ -116,18 +120,28 @@ function redirectAuthFailToHome(){
 }
 
 function addToCart(prodInfo){
-    !prodInfo && (prodInfo={name:'abc'});
     var cart = $.cookie('cart') || {items : []};
-    if(cart.items.indexOf(prodInfo.name) === -1){
-        cart.items.push(prodInfo.name);
+    if(cart.items.indexOf(prodInfo) === -1){
+        cart.items.push(prodInfo);
     }
 
     $('.cartcount').html(cart.items.length);
     $.cookie('cart', cart);
 }
 
-function deleteFromCart(prodId){
+function deleteFromCart(itemIndex, prodId){
+    var cart = $.cookie('cart');
+    if(cart && cart.items){
+        /*cart.items.forEach(function(item, i){
+            if(item.productName === prodId){
+                prodIndex.push(i);
+            }
+        });*/
+        cart.items.splice(itemIndex, 1);
+    }
 
+    $.cookie('cart', cart);
+    updateCartCountLable();
 }
 
 function getCartItemsCount(){

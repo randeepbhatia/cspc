@@ -11,7 +11,7 @@ $(function(){
                 console.log('login error', e);
             }
         };
-        doAjaxSignin(opt);
+        doLogin(opt);
     });
 
     $('.signout').on('click', function(){

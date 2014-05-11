@@ -79,41 +79,7 @@
                     </thead>
                     <tbody>
 
-                    <tr>
-                        <td>iBuprofen</td>
-                        <td>$2.98</td>
-                        <td>
-                            <input type="text" maxlength="2" size="2" value="3">
-                        </td>
-                        <td>$10.00</td>
-                        <td>
-                            <button type="button" name="delete" data-id="2" class="btn btn-xs" onclick=""><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                    </tr>
 
-                    <tr>
-                        <td>Zyrtec</td>
-                        <td>$12.98</td>
-                        <td>
-                            <input type="text" maxlength="2" size="2" value="3">
-                        </td>
-                        <td>$18.00</td>
-                        <td>
-                            <button type="button" name="delete" data-id="2" class="btn btn-xs" onclick=""><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Loritadine</td>
-                        <td>$2.98</td>
-                        <td>
-                            <input type="text" maxlength="2" size="2" value="3">
-                        </td>
-                        <td>$10.00</td>
-                        <td>
-                            <button type="button" name="delete" data-id="2" class="btn btn-xs" onclick=""><span class="glyphicon glyphicon-trash"></span></button>
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -125,14 +91,14 @@
             <div id="checkout-info" style="border:1px solid #ccc">
                 <dl class="dl-horizontal">
                     <dt>Sub Total:</dt>
-                    <dd>$48.87</dd>
+                    <dd id="subtotal">$0.00</dd>
                     <dt>Tax:</dt>
-                    <dd>$4.87</dd>
+                    <dd id="tax">$0.00</dd>
                     <dt>Shipping:</dt>
-                    <dd>$20.00</dd>
+                    <dd id="shipping">$20.00</dd>
                     <hr>
                     <dt>Order Total:</dt>
-                    <dd>$48.87</dd>
+                    <dd id="ordertotal">$0.00</dd>
                 </dl>
 
             </div>
@@ -150,14 +116,16 @@
 <!-- site scripts -->
 <script type="text/template" id="cart-item-template">
     <tr>
-        <td>{name}</td>
-        <td>{price}</td>
+        <td>{productName}</td>
+        <td id="price" data-price="{price}">${price}</td>
         <td>
-            <input type="text" maxlength="2" size="2" value="{quantity}"/>
+            <input type="text" class="itemQuantity" name="quantity" maxlength="2" size="2" value="1"/>
         </td>
-        <td>{total}</td>
+        <td id="total">$0</td>
         <td>
-            <button type="button" name="delete" data-id="{id}" class="btn btn-xs" onclick=""><span class="glyphicon glyphicon-trash"></span></button>
+            <button type="button" name="delete" data-id="{productName}" class="btn btn-xs" onclick="">
+                <span class="glyphicon glyphicon-trash" style="color:red;"></span>
+            </button>
         </td>
     </tr>
 </script>
@@ -182,16 +150,51 @@
         deleteCartItem($this.data("id"), $this.closest('tr'));
     });
 
+    $('#cart-table').on('input', '.itemQuantity', function(e){
+        var $this = $(this);
+        updateCartItemTotal($this.closest('tr'));
+    });
+
+    function updateCartItemTotal($cartRow){
+        var quantity = Number($cartRow.find('input[name=quantity]').val() || 0);
+        var price = Number($cartRow.find('#price').data('price'));
+        var rowtotal = (quantity * price).toFixed(2);
+
+        var $total = $cartRow.find('#total');
+        $total.html( '$' + rowtotal);
+
+        var $subtotal = $('#subtotal');
+        var subtotal = (parseFloat($subtotal.html().replace(/\$/,""))  + parseFloat(rowtotal) ).toFixed(2);
+        $subtotal.html( '$' + subtotal);
+
+        var $tax = $('#tax');
+        var tax = (parseFloat(subtotal) * 0.0975).toFixed(2);    // 9.75% tax
+        $tax.html('$' + tax);
+
+        var shipping = $('#shipping').html().replace(/\$/,"");
+        var $ordertotal = $('#ordertotal');
+        var ordertotal = (parseFloat(subtotal) + parseFloat(tax) + + parseFloat(shipping)).toFixed(2);
+        $ordertotal.html('$' + ordertotal);
+    }
+
     function insertCartItemOnPage(data){
+        if(data.price !== undefined && data.price !== null){
+            data.price = parseFloat(data.price).toFixed(2);
+        }
+
         var template = $('#cart-item-template').html();
         var html = strSubstitute(template,data);
-        $("#cart-table > tbody").append(html);
+        var $newrow = $(html).appendTo("#cart-table > tbody");
+        updateCartItemTotal($newrow);
+
     }
 
     function deleteCartItem(id, row){
         console.log("delete cart item=" + id);
-        deleteFromCart(id);
+        var rowIndex = row[0].sectionRowIndex;
+        deleteFromCart(rowIndex, id);
         row.remove();
+        checkNToggleEmptyCartMsg();
     }
 
     function checkNToggleEmptyCartMsg() {
@@ -208,15 +211,10 @@
         checkNToggleEmptyCartMsg();
         var cart = $.cookie('cart');
         if(cart && cart.items){
-            insertCartItemOnPage({
-                name:'',
-                price:'',
-                quantity:'',
-                total: '',
-                id: ''
+            cart.items.forEach(function(item){
+                insertCartItemOnPage(item);
             });
         }
-
     });
 
 
