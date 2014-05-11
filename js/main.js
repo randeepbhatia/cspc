@@ -35,21 +35,37 @@ function strSubstitute(str, sub) {
 };
 
 function doLogin(data){
+    // clear previous login data in case left behind
+    doLogout();
+
     var loginUrl = CSPC.restUrl + "login";
 
     function onSuccess(d){
-        $.cookie('uLogonData', data);
-        log('loggin user IN. Result = ' + $.cookie('uLogonData') !== undefined);
-        data.onSuccess(d);
+        if(!d.error){
+            data.onSuccess(d);
+            onAuthSuccess(d);
+        } else {
+            onError(d);
+        }
+
     }
 
-    //TODO
-    onSuccess({'name': 'Randeep S', 'email': 'abc@def.com'});
-    return;
+    function onError(e){
+        data.onError(e);
+        $.cookie('error',e);
+        redirect(($.cookie('sitepath') || '') + "checkauth.html");
+    }
 
     if(data.formId){
-        $.post( loginUrl, $("#"+data.formId).serialize()).done(onSuccess).fail(data.onError);
+        $.post( loginUrl, $("#"+data.formId).serialize()).done(onSuccess).fail(onError);
     }
+}
+
+function onAuthSuccess(data){
+    $.cookie('uLogonData', data);
+    $.removeCookie('error');
+    log('loggin user IN. Result = ' + $.cookie('uLogonData') !== undefined);
+    redirect(($.cookie('sitepath') || '') + "checkauth.html");
 }
 
 function doLogout(){
@@ -62,10 +78,17 @@ function doRegister(formId){
 
     function onSuccess(d){
         log("register success", d);
+        var successData = d && d.response && d.response.wrappedUser;
+        if(successData){
+            onAuthSuccess(successData);
+        } else {
+            onError(d);
+        }
     }
 
     function onError(e){
-        log("register success", e);
+        log("register error", e);
+        alert("Some error occured while registering.\nCheck internet connection,\nCheck server is online\nTry some other email address");
     }
 
     if(formId){
@@ -77,22 +100,25 @@ function getAllProducts(onSuccess){
     $.get( CSPC.restUrl + "products", onSuccess);
 }
 
+function saveNewProduct(data, onSuccess, onError){
+    $.post( CSPC.restUrl + "product/insert", data).done(onSuccess).fail(onError);
+}
+
 function placeOrder(){
     $.post(CSPC.restUrl);
 }
 
 function isLoggedIn(){
+    var logonData = $.cookie('uLogonData');
     log("requested user login status. returning=" + $.cookie('uLogonData') !== undefined);
-    return $.cookie('uLogonData') !== undefined;
+    return logonData !== undefined && logonData.accountType && !logonData.error;
 }
 
 function isAccountTypeSeller(){
     if(!isLoggedIn()){
         throw Error("user not logged in");
     }
-    //TODO
-    return false;
-    //return $.cookie('uLogonData').acttype !== 'u';
+    return $.cookie('uLogonData').accountType === 's';
 }
 
 function getAcctTypeBasedRediretUrl(){

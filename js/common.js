@@ -5,7 +5,6 @@ $(function(){
             formId: 'loginForm',
             onSuccess: function(d){
                 console.log('login', d);
-                redirect(($.cookie('sitepath') || '') + "checkauth.html", true);
             },
             onError: function(e){
                 console.log('login error', e);

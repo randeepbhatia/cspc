@@ -77,9 +77,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="descr" class="col-sm-3 control-label">Description</label>
+                        <label for="item-price" class="col-sm-3 control-label">Price</label>
                         <div class="col-sm-8">
-                            <textarea class="form-control" id="descr" placeholder=""></textarea>
+                            <input type="number" class="form-control" id="item-price" placeholder="">
                         </div>
                     </div>
                 </form>
@@ -136,7 +136,7 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
 
-            <div class="products-table">
+            <div class="products-table col-xs-12">
                 <!-- thead -->
                 <div style="display:table-row; font-size: 14px; font-weight: bold; border-bottom: 2px solid #ccc; margin-bottom: 10px;">
                     <div class="col-sm-8 tablecell">
@@ -159,11 +159,11 @@
                             <span class="glyphicon glyphicon-asterisk small"></span> Mfg Date: <span id="mfg_date">12 dec</span>
                             <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">12 dec</span>
                         </p>
-                        <p id="description">Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                        <p id="price">3.20</p>
                     </div>
                     <div class="col-sm-3 tablecell">
-                        <p>Sold: <span id="num_sold">12</span><br>
-                            Left: <span id="num_left">100</span><br>
+                        <p>
+                            <span id="num_left">100</span>
                         </p>
                     </div>
                     <div class="col-sm-1 tablecell">
@@ -178,11 +178,11 @@
                             <span class="glyphicon glyphicon-asterisk small"></span> Mfg Date: <span id="mfg_date">12 dec</span>
                             <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">12 dec</span>
                         </p>
-                        <p id="description">Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                        <p id="price">4.00</p>
                     </div>
                     <div class="col-sm-3 tablecell">
-                        <p>Sold: <span id="num_sold">12</span><br>
-                            Left: <span id="num_left">100</span><br>
+                        <p>
+                           <span id="num_left">100</span>
                         </p>
                     </div>
                     <div class="col-sm-1 tablecell">
@@ -200,16 +200,16 @@
 <script type="text/template" id="product-listing-template">
     <div class="product-info">
         <div class="col-sm-8 tablecell">
-            <strong id="prod_name">{name}</strong>
+            <strong id="prod_name">{productName}</strong>
             <p class="small">
-                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">{mfg_date}</span>
-                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">{exp_date}</span>
+                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">{manufacturingDate}</span>
+                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">{expiryDate}</span>
             </p>
-            <p id="description">{description}</p>
+            <p id="price">{price}</p>
         </div>
         <div class="col-sm-3 tablecell">
-            <p>Sold: <span id="num_sold">{sold}</span><br>
-                Left: <span id="num_left">{left}</span><br>
+            <p>
+                <span id="num_left">{quantity}</span>
             </p>
         </div>
         <div class="col-sm-1 tablecell">
@@ -233,7 +233,7 @@
 
         $('#add-product-dialog button[type="button"]').on('click', function(e){
             var targetType = $(e.target).data('type'),
-                prodName, mfgDate, expDate, numSold, numLeft, descr, $triggerElem, $popupElem, $productInfoContainer;
+                prodName, mfgDate, expDate, numSold, numLeft, price, $triggerElem, $popupElem, $productInfoContainer;
 
             if(targetType === 'cancel'){
                 $.magnificPopup.instance.close();
@@ -247,24 +247,35 @@
                 expDate = $popupElem.find('#expDate').val();
                 numSold = parseInt($popupElem.find('#inventorySold').val(), 10);
                 numLeft = parseInt($popupElem.find('#inventoryLeft').val(), 10);
-                descr = $popupElem.find('#descr').val();
+                price = $popupElem.find('#item-price').val();
 
                 if($triggerElem.data('action') === 'add'){
-                    addNewProduct({
-                        name: prodName,
-                        mfg_date: mfgDate,
-                        exp_date: expDate,
+                    saveNewProduct({
+                        productName: prodName,
+                        manufacturingDate: +new Date(mfgDate),
+                        expiryDate: +new Date(expDate),
                         sold: numSold,
-                        left: numLeft,
-                        description: descr
+                        quantity: numLeft,
+                        price: price
+                    }, function(d){
+                        console.log("add prod success", d);
+                        var prodSaveData = d && d.response && d.response.wrappedProduct;
+                        prodSaveData && insertNewProductOnPage({
+                            productName: prodSaveData.productName,
+                            manufacturingDate: new Date(prodSaveData.manufacturingDate).format('mm/dd/yyyy'),
+                            expiryDate: new Date(prodSaveData.expiryDate).format('mm/dd/yyyy'),
+                            quantity: prodSaveData.quantity,
+                            price: parseFloat(prodSaveData.price).toFixed(2)
+                        });
+                    }, function (e) {
+                        console.log("add prod error", e);
                     });
                 } else if($triggerElem.data('action') === 'edit'){
                     $productInfoContainer.find('#prod_name').html(prodName);
                     $productInfoContainer.find('#mfg_date').html(mfgDate);
                     $productInfoContainer.find('#exp_date').html(expDate);
-                    $productInfoContainer.find('#num_sold').html(numSold);
                     $productInfoContainer.find('#num_left').html(numLeft);
-                    $productInfoContainer.find('#description').html(descr);
+                    $productInfoContainer.find('#price').html(price);
                 }
 
                 $.magnificPopup.instance.close();
@@ -272,13 +283,11 @@
         });
     });
 
-    function addNewProduct(prodData){
+    function insertNewProductOnPage(prodData){
         var template = $('#product-listing-template').html();
         var html = strSubstitute(template,prodData);
-        //$(".products-table").append(html);
         var newNode = $(html).appendTo($(".products-table"));
         attachPopup(newNode.find('a[class~=dialog]'));
-
     }
 
     function attachPopup($elem){
@@ -295,7 +304,7 @@
                 elementParse: function(e){
                     var targetAction = $(e.el[0]).data('action'),
                             $productInfoContainer;
-                    console.log(e);
+                    //console.log(e);
                     if(targetAction === 'add'){
                         $('#dialog-action').html('Add');
                         $('#prodName').val("");
@@ -303,7 +312,7 @@
                         $('#expDate').val("");
                         $('#inventorySold').val("");
                         $('#inventoryLeft').val("");
-                        $('#descr').val("");
+                        $('#item-price').val("");
 
                     } else if (targetAction === 'edit'){
                         $('#dialog-action').html('Edit');
@@ -311,9 +320,8 @@
                         $('#prodName').val($productInfoContainer.find('#prod_name').html() || "");
                         $('#mfgDate').val($productInfoContainer.find('#mfg_date').html() || "");
                         $('#expDate').val($productInfoContainer.find('#exp_date').html() || "");
-                        $('#inventorySold').val($productInfoContainer.find('#num_sold').html() || "");
                         $('#inventoryLeft').val($productInfoContainer.find('#num_left').html() || "");
-                        $('#descr').val($productInfoContainer.find('#description').html() || "");
+                        $('#item-price').val($productInfoContainer.find('#price').html() || "");
                     }
 
 
