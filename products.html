@@ -144,7 +144,17 @@
         });
 
         getAllProducts(function(data){
+            var sellerAddresses = [];
             var products = (data && data.response && data.response.marshallableProduct) || [];
+            for(var i in products){
+                var productData = products[i] && products[i].wrappedProduct;
+                if(productData.address && sellerAddresses.indexOf(productData.address) === -1) {
+                    sellerAddresses.push(productData.address);
+                }
+            }
+
+            console.log(sellerAddresses);
+            addMarkersAtAddresses(sellerAddresses);
             addProductsToPage(products);
         });
 

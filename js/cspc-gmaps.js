@@ -8,6 +8,7 @@ function loadScript(url) {
 }
 
 function initializeMapApi() {
+    CSPC.geocoder = new google.maps.Geocoder();
     var mapOptions = {
         center: new google.maps.LatLng(-34.397, 150.644),
         zoom: 8
@@ -15,7 +16,7 @@ function initializeMapApi() {
     CSPC.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
     setupGoogleMapEventListeners(CSPC.map);
-    addFiveRandomMarkers(CSPC.map);
+    //addFiveRandomMarkers(CSPC.map);
 
     //CSPC.map.getCenter()
     //CSPC.map.setCenter(location);
@@ -41,6 +42,38 @@ function placeMarker(map, location) {
         position: location,
         map: map
     });
+}
+
+function geoCodeAddress(address, callback) {
+    CSPC.geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            //map.setCenter(results[0].geometry.location);
+
+            callback(results[0].geometry.location);
+        } else {
+            console.log("Geocode was not successful for the following reason: " + status);
+        }
+    });
+}
+
+function addMarkersAtAddresses(addrArr){
+    var locationArr = [];
+    var bounds = new google.maps.LatLngBounds();
+
+    function getAddrLatLang(location){
+        locationArr.push(location);
+        bounds.extend (location);
+
+        var marker = placeMarker(CSPC.map, location);
+
+        if(locationArr.length === addrArr.length){
+            CSPC.map.fitBounds(bounds);
+        }
+    }
+
+    for(var i = 0; i < addrArr.length; i++){
+        geoCodeAddress(addrArr[i], getAddrLatLang);
+    }
 }
 
 function addFiveRandomMarkers(map) {
