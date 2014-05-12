@@ -1,15 +1,17 @@
 var CSPC = CSPC || {};
 
 //---------- config ------------
-//TODO cleanup
-//CSPC.restUrl = "http://54.220.241.101:8080/cpsc/rest/";
-CSPC.restUrl = "http://192.168.1.202:8080/cpsc/rest/";
+
+//ATTENTION: Please change this value to point to server host for restApi calls
+CSPC.restHost = "http://54.220.241.101:8080";
+
+CSPC.restUrl = CSPC.restHost + "/cpsc/rest/";
 CSPC.sitepath = "/CPSC/";
-CSPC.authFailRedirectOn = false;
+CSPC.authFailRedirectOn = true;
 
 $.cookie.json = true;
 $.cookie.defaults = {
-    expires: 1,
+    expires: 2,
     path: '/'
 };
 //---------- config end ------------

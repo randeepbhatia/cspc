@@ -144,8 +144,14 @@
         });
 
         getAllProducts(function(data){
-            var sellerAddresses = [];
             var products = (data && data.response && data.response.marshallableProduct) || [];
+            addProductsToPage(products);
+        });
+
+        function addProductsToPage(products){
+
+            // place corresponding markers
+            var sellerAddresses = [];
             for(var i in products){
                 var productData = products[i] && products[i].wrappedProduct;
                 if(productData.address && sellerAddresses.indexOf(productData.address) === -1) {
@@ -155,10 +161,8 @@
 
             console.log(sellerAddresses);
             addMarkersAtAddresses(sellerAddresses);
-            addProductsToPage(products);
-        });
 
-        function addProductsToPage(products){
+            // add the products to page
             $('.products-table').empty();
             var template = $('#product-listing-template').html();
             for(var i = 0; i < products.length; i++){
