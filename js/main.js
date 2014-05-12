@@ -41,7 +41,7 @@ function doLogin(data){
     // clear previous login data in case left behind
     doLogout();
 
-    var loginUrl = CSPC.restUrl + "login";
+    var loginUrl = CSPC.restUrl + "user";
 
     function onSuccess(d){
 
@@ -51,7 +51,8 @@ function doLogin(data){
         };
 
         if(!d.error){
-            doPostSuccessLogin(d);
+            var successData = d && d.response && d.response.wrappedUser;
+            doPostSuccessLogin(successData);
         } else {
             onError(d);
         }
@@ -64,7 +65,7 @@ function doLogin(data){
     }
 
     if(data.formId){
-        $.post( loginUrl, $("#"+data.formId).serialize()).done(onSuccess).fail(onError);
+        $.get( loginUrl, $("#"+data.formId).serialize(), onSuccess);
     }
 }
 
@@ -138,12 +139,25 @@ function searchProduct(searchTerm, onSuccess, onError){
 
 function placeOrder(onSuccess, onError){
     var cart = $.cookie('cart');
+    var cartItemRequiredData = [];
     if(!cart || !cart.items || !cart.items.length){
         console.log("ALERT! cant place order on empty cart");
         return;
     }
 
-    var onSuccessCb = function(){
+    for(var i in cart.items){
+        var item = cart.items[i];
+        cartItemRequiredData.push({
+            productName: item.productName,
+            quantity: item.quantity
+        });
+    }
+
+    var onSuccessCb = function(d){
+        if(d.error){
+            onErrorCb();
+            return;
+        }
         onSuccess();
     };
 
@@ -151,8 +165,9 @@ function placeOrder(onSuccess, onError){
         onError();
     }
     $.post(CSPC.restUrl + 'order/insert', {
-        json: cart.items,
-        email: getLoggedInUserData('email')
+        json: JSON.stringify(cartItemRequiredData),
+        email: getLoggedInUserData('email'),
+        price: $.cookie('cart').ordertotal || 0.00
     }).done(onSuccessCb).fail(onErrorCb);
 }
 
