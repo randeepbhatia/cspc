@@ -31,6 +31,14 @@
             color: #000;
             text-decoration: none;
         }
+
+        .product_item_type:before{
+            content: "Type: "
+        }
+
+        .product_item_price:before {
+            content: '$'
+        }
     </style>
 
     <script src="../js/vendor/modernizr-2.6.2.min.js"></script>
@@ -53,9 +61,15 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="mfdDate" class="col-sm-3 control-label">Mfg. Date</label>
+                        <label for="prodType" class="col-sm-3 control-label">Type</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control" id="mfdDate" placeholder="">
+                            <input type="text" class="form-control" id="prodType" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mfgDate" class="col-sm-3 control-label">Mfg. Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" id="mfgDate" placeholder="">
                         </div>
                     </div>
                     <div class="form-group">
@@ -65,13 +79,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inventorySold" class="col-sm-3 control-label">Num Sold</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" id="inventorySold" placeholder="">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="inventoryLeft" class="col-sm-3 control-label">Num Left</label>
+                        <label for="inventoryLeft" class="col-sm-3 control-label">Inventory</label>
                         <div class="col-sm-8">
                             <input type="number" class="form-control" id="inventoryLeft" placeholder="">
                         </div>
@@ -152,43 +160,7 @@
                 </div>
 
                 <!-- tbody -->
-                <div class="product-info">
-                    <div class="col-sm-8 tablecell">
-                        <strong id="prod_name">Product Name</strong>
-                        <p class="small">
-                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg Date: <span id="mfg_date">12 dec</span>
-                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">12 dec</span>
-                        </p>
-                        <p id="price">3.20</p>
-                    </div>
-                    <div class="col-sm-3 tablecell">
-                        <p>
-                            <span id="num_left">100</span>
-                        </p>
-                    </div>
-                    <div class="col-sm-1 tablecell">
-                        <a href="#" data-id="{id}" data-action="edit" data-mfp-src="#add-product-dialog" class="btn btn-sm dialog"><span class="glyphicon glyphicon-pencil"></span></a>
-                    </div>
-                </div>
-
-                <div class="product-info">
-                    <div class="col-sm-8 tablecell">
-                        <strong id="prod_name">Product Name</strong>
-                        <p class="small">
-                            <span class="glyphicon glyphicon-asterisk small"></span> Mfg Date: <span id="mfg_date">12 dec</span>
-                            <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">12 dec</span>
-                        </p>
-                        <p id="price">4.00</p>
-                    </div>
-                    <div class="col-sm-3 tablecell">
-                        <p>
-                           <span id="num_left">100</span>
-                        </p>
-                    </div>
-                    <div class="col-sm-1 tablecell">
-                        <a href="#" data-id="{id}" data-action="edit" data-mfp-src="#add-product-dialog" class="btn btn-sm dialog"><span class="glyphicon glyphicon-pencil"></span></a>
-                    </div>
-                </div>
+                <!-- products list go here-->
 
             </div>
 
@@ -199,23 +171,25 @@
 <!-- site scripts -->
 <script type="text/template" id="product-listing-template">
     <div class="product-info">
-        <div class="col-sm-8 tablecell">
+        <div class="col-sm-8 tablecell" style="padding-top: 10px;">
             <strong id="prod_name">{productName}</strong>
-            <p class="small">
-                <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: <span id="mfg_date">{manufacturingDate}</span>
-                <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: <span id="exp_date">{expiryDate}</span>
-            </p>
-            <p id="price">{price}</p>
+            <br>
+            <em id="prod_type" class="product_item_type small">{productType}</em>
+            <ul class="small">
+                <li>Mfg Date: <span id="mfg_date">{manufacturingDate}</span></li>
+                <li>Exp Date: <span id="exp_date">{expiryDate}</span></li>
+                <li>Unit Price: <span id="price" class="product_item_price" >{price}</span></li>
+            </ul>
         </div>
-        <div class="col-sm-3 tablecell">
-            <p>
-                <span id="num_left">{quantity}</span>
-            </p>
+        <div class="col-sm-3 tablecell" style="padding-top: 10px;">
+            <p><span id="num_left">{quantity}</span></p>
         </div>
-        <div class="col-sm-1 tablecell">
-            <a href="#" data-id="{id}" data-action="edit" data-mfp-src="#add-product-dialog" class="btn btn-sm dialog"><span class="glyphicon glyphicon-pencil"></span></a>
+        <div class="col-sm-1 tablecell" style="padding-top: 10px;">
+            <a href="#" data-id="{productName}" data-action="edit" data-mfp-src="#add-product-dialog" class="btn btn-sm dialog"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="#" data-id="{productName}" data-action="delete" class="btn btn-sm"><span class="glyphicon glyphicon-trash" style="color:red;"></span></a>
         </div>
     </div>
+
 </script>
 <script src="../js/vendor/jquery-1.11.0.min.js"></script>
 <script src="../js/vendor/bootstrap.js"></script>
@@ -228,12 +202,55 @@
     redirectAuthFailToHome();
 
     $(function(){
+
+        $('.products-table').on('click', "a[data-action='delete']", function(){
+            var $row = $(this).closest('.product-info');
+            var onDeleteError = function(e){
+                console.log("deletion error", e);
+                alert("Sorry, some error happened during product deletion process");
+            };
+            console.log('deleting product=' + $(this).data('id'));
+            deleteSellerProduct($(this).data('id'), function(data){
+                if(data.error){
+                    onDeleteError(data);
+                    return;
+                }
+                console.log("deletion successful");
+                $row.remove();
+            }, onDeleteError);
+        });
+
+        // fetch all seller products and list them on the page
+        getSpecificSellerProducts(getLoggedInUserData('email'), function(d){
+            var data = d && d.response && d.response.marshallableProduct;
+            if(data){
+                for(var i = 0; i < data.length; i++){
+                    var product = data[i] && data[i].wrappedProduct;
+                    if(!product){
+                        continue;
+                    }
+                    insertNewProductOnPage({
+                        productName: product.productName,
+                        productType: product.productType,
+                        manufacturingDate: new Date(product.manufacturingDate).format('mm/dd/yyyy', true),
+                        expiryDate: new Date(product.expiryDate).format('mm/dd/yyyy', true),
+                        quantity: product.quantity,
+                        price: parseFloat(product.price).toFixed(2)
+                    });
+                }
+            } else {
+                alert("Some error occured while fetching the products");
+            }
+        }, function(e){
+            alert("Some error occured while fetching the products for this seller from server.");
+        });
+
         //initialize page
         attachPopup($('.dialog'));
 
         $('#add-product-dialog button[type="button"]').on('click', function(e){
             var targetType = $(e.target).data('type'),
-                prodName, mfgDate, expDate, numSold, numLeft, price, $triggerElem, $popupElem, $productInfoContainer;
+                prodName, prodType, mfgDate, expDate, numLeft, price, $triggerElem, $popupElem, $productInfoContainer;
 
             if(targetType === 'cancel'){
                 $.magnificPopup.instance.close();
@@ -243,18 +260,18 @@
                 $popupElem = $($.magnificPopup.instance.currItem.inlineElement);
 
                 prodName = $popupElem.find('#prodName').val();
-                mfgDate = $popupElem.find('#mfdDate').val();
+                prodType = $popupElem.find('#prodType').val();
+                mfgDate = $popupElem.find('#mfgDate').val();
                 expDate = $popupElem.find('#expDate').val();
-                numSold = parseInt($popupElem.find('#inventorySold').val(), 10);
                 numLeft = parseInt($popupElem.find('#inventoryLeft').val(), 10);
                 price = $popupElem.find('#item-price').val();
 
                 if($triggerElem.data('action') === 'add'){
                     saveNewProduct({
                         productName: prodName,
+                        productType: prodType,
                         manufacturingDate: +new Date(mfgDate),
                         expiryDate: +new Date(expDate),
-                        sold: numSold,
                         quantity: numLeft,
                         price: price
                     }, function(d){
@@ -262,8 +279,9 @@
                         var prodSaveData = d && d.response && d.response.wrappedProduct;
                         prodSaveData && insertNewProductOnPage({
                             productName: prodSaveData.productName,
-                            manufacturingDate: new Date(prodSaveData.manufacturingDate).format('mm/dd/yyyy'),
-                            expiryDate: new Date(prodSaveData.expiryDate).format('mm/dd/yyyy'),
+                            productType: prodSaveData.productType,
+                            manufacturingDate: new Date(prodSaveData.manufacturingDate).format('mm/dd/yyyy', true),
+                            expiryDate: new Date(prodSaveData.expiryDate).format('mm/dd/yyyy', true),
                             quantity: prodSaveData.quantity,
                             price: parseFloat(prodSaveData.price).toFixed(2)
                         });
@@ -271,11 +289,29 @@
                         console.log("add prod error", e);
                     });
                 } else if($triggerElem.data('action') === 'edit'){
-                    $productInfoContainer.find('#prod_name').html(prodName);
-                    $productInfoContainer.find('#mfg_date').html(mfgDate);
-                    $productInfoContainer.find('#exp_date').html(expDate);
-                    $productInfoContainer.find('#num_left').html(numLeft);
-                    $productInfoContainer.find('#price').html(price);
+                    var onEditError = function(e){
+                        console.log("error during product data edit", e);
+                        alert("Some error occurred while saving data to server. Please try again");
+                    };
+                    updateSellerProduct({
+                        productName: prodName,
+                        productType: prodType,
+                        manufacturingDate: +new Date(mfgDate),
+                        expiryDate: +new Date(expDate),
+                        quantity: numLeft,
+                        price: price
+                    }, function(data){
+                        if(data.error){
+                            onEditError(data);
+                            return;
+                        }
+                        $productInfoContainer.find('#prod_name').html(prodName);
+                        $productInfoContainer.find('#prod_type').html(prodType);
+                        $productInfoContainer.find('#mfg_date').html(new Date(mfgDate).format('mm/dd/yyyy',true));
+                        $productInfoContainer.find('#exp_date').html(new Date(expDate).format('mm/dd/yyyy',true));
+                        $productInfoContainer.find('#num_left').html(numLeft);
+                        $productInfoContainer.find('#price').html(price);
+                    }, onEditError);
                 }
 
                 $.magnificPopup.instance.close();
@@ -308,20 +344,23 @@
                     if(targetAction === 'add'){
                         $('#dialog-action').html('Add');
                         $('#prodName').val("");
+                        $('#prodType').val("");
                         $('#mfgDate').val("");
                         $('#expDate').val("");
-                        $('#inventorySold').val("");
                         $('#inventoryLeft').val("");
                         $('#item-price').val("");
+                        $("#prodName").prop('disabled', false);
 
                     } else if (targetAction === 'edit'){
                         $('#dialog-action').html('Edit');
                         $productInfoContainer = $(e.el[0]).closest('.product-info');
                         $('#prodName').val($productInfoContainer.find('#prod_name').html() || "");
-                        $('#mfgDate').val($productInfoContainer.find('#mfg_date').html() || "");
-                        $('#expDate').val($productInfoContainer.find('#exp_date').html() || "");
+                        $('#prodType').val($productInfoContainer.find('#prod_type').html() || "");
+                        $('#mfgDate').val(new Date($productInfoContainer.find('#mfg_date').html()).format('yyyy-mm-dd',true) || "");
+                        $('#expDate').val(new Date($productInfoContainer.find('#exp_date').html()).format('yyyy-mm-dd',true) || "");
                         $('#inventoryLeft').val($productInfoContainer.find('#num_left').html() || "");
                         $('#item-price').val($productInfoContainer.find('#price').html() || "");
+                        $("#prodName").prop('disabled', true);
                     }
 
 

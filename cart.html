@@ -21,6 +21,10 @@
             background: none;
             outline: none;
         }
+
+        .dollar-value:before {
+            content: '$'
+        }
     </style>
 
     <script src="js/vendor/modernizr-2.6.2.min.js"></script>
@@ -68,7 +72,10 @@
 
             <div class="panel panel-default">
                 <!-- Default panel contents -->
-                <div class="panel-heading">Edit/Update Items</div>
+                <div class="panel-heading">
+                    Edit/Update Items
+                    <a class="btn btn-xs btn-link pull-right" id="update-cart-btn" href="javascript:void(0)" role="button">Update Cart</a>
+                </div>
 
                 <!-- Table -->
                 <table class="table" id="cart-table">
@@ -95,18 +102,18 @@
             <div id="checkout-info" style="border:1px solid #ccc">
                 <dl class="dl-horizontal">
                     <dt>Sub Total:</dt>
-                    <dd id="subtotal">$0.00</dd>
+                    <dd id="subtotal" class="dollar-value">0.00</dd>
                     <dt>Tax:</dt>
-                    <dd id="tax">$0.00</dd>
+                    <dd id="tax" class="dollar-value">0.00</dd>
                     <dt>Shipping:</dt>
-                    <dd id="shipping">$20.00</dd>
+                    <dd id="shipping" class="dollar-value">20.00</dd>
                     <hr>
                     <dt>Order Total:</dt>
-                    <dd id="ordertotal">$0.00</dd>
+                    <dd id="ordertotal" class="dollar-value">0.00</dd>
                 </dl>
 
             </div>
-            <button class="btn btn-success btn-sm btn-block" style="margin-top: 8px;">Place Order</button>
+            <button class="btn btn-success btn-sm btn-block ordergo" style="margin-top: 8px;">Place Order</button>
         </div>
 
     </div> <!-- row end -->
@@ -123,9 +130,9 @@
         <td>{productName}</td>
         <td id="price" data-price="{price}">${price}</td>
         <td>
-            <input type="text" class="itemQuantity" name="quantity" maxlength="2" size="2" value="1"/>
+            <input type="text" class="itemQuantity" name="quantity" maxlength="2" size="2" value="{quantity}"/>
         </td>
-        <td id="total">$0</td>
+        <td id="total" class="dollar-value">0</td>
         <td>
             <button type="button" name="delete" data-id="{productName}" class="btn btn-xs" onclick="">
                 <span class="glyphicon glyphicon-trash" style="color:red;"></span>
@@ -149,14 +156,41 @@
         checkNToggleEmptyCartMsg();
     });
 
-    $('#cart-table').delegate("td > button", "click", function(event){
-        var $this = $(this);
-        deleteCartItem($this.data("id"), $this.closest('tr'));
+    $('#update-cart-btn').on('click', function(){
+        $('#cart-table > tbody > tr').each(function(index, tr){
+            if($(tr).find('.itemQuantity').val() == 0){
+                deleteCartItem($(tr));
+            }
+        });
+
+        updateOrderTotals($.cookie('cart'));
     });
 
-    $('#cart-table').on('input', '.itemQuantity', function(e){
+    $('.ordergo').on('click', function(){
+        placeOrder(function(d){
+            console.log("Order placed success", d);
+            //clearCart();
+        }, function(e){
+            console.log("order palced errored", e);
+            alert("Some error occurred while placing your order. Please try again.");
+        });
+    });
+
+    $('#cart-table').delegate("td > button", "click", function(event){
         var $this = $(this);
-        updateCartItemTotal($this.closest('tr'));
+        deleteCartItem($this.closest('tr'), $this.data("id"));
+    });
+
+    $('#cart-table').on('focusout', '.itemQuantity', function(e){
+        var $this = $(this);
+        var value = $this.val();
+        var cartItemRow = $this.closest('tr');
+        var rowIndex = cartItemRow[0].sectionRowIndex;
+        if(!value || isNaN(parseFloat(value))){
+            $this.val(0);
+        }
+        updateCart(rowIndex, parseInt($this.val(),10));
+        updateCartItemTotal(cartItemRow);
     });
 
     function updateCartItemTotal($cartRow){
@@ -165,20 +199,41 @@
         var rowtotal = (quantity * price).toFixed(2);
 
         var $total = $cartRow.find('#total');
-        $total.html( '$' + rowtotal);
+        $total.html( rowtotal);
+    }
+
+    function updateOrderTotals(cart){
+
+        if(!cart){
+            return;
+        }
+
+        var newTotals = {
+            subtotal: 0,
+            tax: 0,
+            shipping: 20.00,
+            ordertotal: 0
+        };
+
+        //calculate new subtotal, ordertotal
+        for(var index in cart.items){
+            var item = cart.items[index];
+            newTotals.subtotal += (item.quantity * item.price);
+        }
+
+        newTotals.tax = newTotals.subtotal * 0.0975; // 9.75 % tax
+        newTotals.ordertotal = newTotals.subtotal + newTotals.tax + newTotals.shipping;
 
         var $subtotal = $('#subtotal');
-        var subtotal = (parseFloat($subtotal.html().replace(/\$/,""))  + parseFloat(rowtotal) ).toFixed(2);
-        $subtotal.html( '$' + subtotal);
+        $subtotal.html(newTotals.subtotal.toFixed(2));
 
         var $tax = $('#tax');
-        var tax = (parseFloat(subtotal) * 0.0975).toFixed(2);    // 9.75% tax
-        $tax.html('$' + tax);
+        $tax.html(newTotals.tax.toFixed(2));
 
-        var shipping = $('#shipping').html().replace(/\$/,"");
+        $('#shipping').html(newTotals.shipping.toFixed(2));
+
         var $ordertotal = $('#ordertotal');
-        var ordertotal = (parseFloat(subtotal) + parseFloat(tax) + + parseFloat(shipping)).toFixed(2);
-        $ordertotal.html('$' + ordertotal);
+        $ordertotal.html(newTotals.ordertotal.toFixed(2));
     }
 
     function insertCartItemOnPage(data){
@@ -193,10 +248,10 @@
 
     }
 
-    function deleteCartItem(id, row){
+    function deleteCartItem(row, id){
         console.log("delete cart item=" + id);
         var rowIndex = row[0].sectionRowIndex;
-        deleteFromCart(rowIndex, id);
+        deleteFromCart(rowIndex);
         row.remove();
         checkNToggleEmptyCartMsg();
     }
@@ -218,6 +273,8 @@
             cart.items.forEach(function(item){
                 insertCartItemOnPage(item);
             });
+
+            updateOrderTotals(cart);
         }
     });
 

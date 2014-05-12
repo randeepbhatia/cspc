@@ -1,7 +1,10 @@
 var CSPC = CSPC || {};
 
 //---------- config ------------
-CSPC.restUrl = "http://54.220.241.101:8080/cpsc/rest/";
+//TODO cleanup
+//CSPC.restUrl = "http://54.220.241.101:8080/cpsc/rest/";
+CSPC.restUrl = "http://192.168.1.202:8080/cpsc/rest/";
+CSPC.sitepath = "/CPSC/";
 CSPC.authFailRedirectOn = false;
 
 $.cookie.json = true;
@@ -41,13 +44,17 @@ function doLogin(data){
     var loginUrl = CSPC.restUrl + "login";
 
     function onSuccess(d){
+
+        var doPostSuccessLogin = function(da){
+            data.onSuccess(da);
+            onAuthSuccess(da);
+        };
+
         if(!d.error){
-            data.onSuccess(d);
-            onAuthSuccess(d);
+            doPostSuccessLogin(d);
         } else {
             onError(d);
         }
-
     }
 
     function onError(e){
@@ -100,18 +107,76 @@ function getAllProducts(onSuccess){
     $.get( CSPC.restUrl + "products", onSuccess);
 }
 
+function getSpecificSellerProducts(sellerid, onSuccess, onError){
+    if(!sellerid){
+        return;
+    }
+    $.get( CSPC.restUrl + "user/products", {email: sellerid}).done(onSuccess).fail(onError);
+}
+
 function saveNewProduct(data, onSuccess, onError){
+    if(data && !data.email){
+        data.email = getLoggedInUserData('email');
+    }
     $.post( CSPC.restUrl + "product/insert", data).done(onSuccess).fail(onError);
 }
 
-function placeOrder(){
-    $.post(CSPC.restUrl);
+function updateSellerProduct(data, onSuccess, onError){
+    if(data && !data.email){
+        data.email = getLoggedInUserData('email');
+    }
+    $.post( CSPC.restUrl + "product/update", {product: JSON.stringify(data)}).done(onSuccess).fail(onError);
+}
+
+function deleteSellerProduct(prodId, onSuccess, onError){
+    $.post( CSPC.restUrl + "product/delete", {productName: JSON.stringify(prodId)}).done(onSuccess).fail(onError);
+}
+
+function searchProduct(searchTerm, onSuccess, onError){
+    $.get( CSPC.restUrl + "product/search", {productName: searchTerm}).done(onSuccess).fail(onError);
+}
+
+function placeOrder(onSuccess, onError){
+    var cart = $.cookie('cart');
+    if(!cart || !cart.items || !cart.items.length){
+        console.log("ALERT! cant place order on empty cart");
+        return;
+    }
+
+    var onSuccessCb = function(){
+        onSuccess();
+    };
+
+    var onErrorCb = function(){
+        onError();
+    }
+    $.post(CSPC.restUrl + 'order/insert', {
+        json: cart.items,
+        email: getLoggedInUserData('email')
+    }).done(onSuccessCb).fail(onErrorCb);
 }
 
 function isLoggedIn(){
     var logonData = $.cookie('uLogonData');
     log("requested user login status. returning=" + $.cookie('uLogonData') !== undefined);
     return logonData !== undefined && logonData.accountType && !logonData.error;
+}
+
+function getLoggedInUserData(field){
+    if(!isLoggedIn()){
+        console.log("user is not logged in. no user data available.");
+        return;
+    }
+
+    var userData = $.cookie('uLogonData');
+    if(!userData){
+        return null;
+    } else if(typeof field === 'string' && field !== ''){
+        return userData[field];
+    } else {
+        return userData;
+    }
+
 }
 
 function isAccountTypeSeller(){
@@ -141,33 +206,54 @@ function redirect(url, keepCurrPageInHistory){
 
 function redirectAuthFailToHome(){
     if(CSPC.authFailRedirectOn === true && !isLoggedIn()){
-        redirect(($.cookie('sitepath') || '') + 'index.html', true);
+        redirect(($.cookie('sitepath') || CSPC.sitepath ||'') + 'index.html', true);
     }
 }
 
 function addToCart(prodInfo){
     var cart = $.cookie('cart') || {items : []};
-    if(cart.items.indexOf(prodInfo) === -1){
+    var exists = false;
+
+    for(var i = 0; i < cart.items.length; i++){
+        if(cart.items[i].productName === prodInfo.productName){
+            exists = true;
+            cart.items[i].quantity++;
+        }
+    }
+
+    if(!exists){
+        prodInfo.quantity = 1;
         cart.items.push(prodInfo);
     }
 
-    $('.cartcount').html(cart.items.length);
     $.cookie('cart', cart);
+    updateCartCountLable();
 }
 
 function deleteFromCart(itemIndex, prodId){
     var cart = $.cookie('cart');
     if(cart && cart.items){
-        /*cart.items.forEach(function(item, i){
-            if(item.productName === prodId){
-                prodIndex.push(i);
-            }
-        });*/
         cart.items.splice(itemIndex, 1);
     }
 
-    $.cookie('cart', cart);
+    if(cart){
+        $.cookie('cart', cart);
+    }
     updateCartCountLable();
+}
+
+function updateCart(itemIndex, newQuantity){
+    var cart = $.cookie('cart');
+
+    if(cart && cart.items){
+        cart.items[itemIndex].quantity = newQuantity;
+    }
+
+    if(cart){
+        $.cookie('cart', cart);
+    }
+
+    return cart;
 }
 
 function getCartItemsCount(){

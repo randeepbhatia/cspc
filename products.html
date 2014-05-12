@@ -16,6 +16,9 @@
         <link rel="stylesheet" href="css/style.css">
         <style>
             #map-canvas { height: 365px; }
+            .prod_item_price:before{
+                content: 'Price: $';    
+            }
         </style>
 
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
@@ -36,6 +39,10 @@
           <a class="navbar-brand" href="index.html">ALWAYSTOCKED.COM</a>
         </div>
         <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="products.html">Products</a></li>
+            </ul>
+
             <a href="#" data-action="logout" class="navbar-right navbar-btn btn btn-warning hidden-xs signout">
                 <span class="glyphicon glyphicon-off"></span> Sign out
             </a>
@@ -55,9 +62,9 @@
 
               <form class="col-sm-4 col-sm-push-8" role="search" style="margin:11px 0px">
               <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search" name="search" id="search">
+                  <input type="text" class="form-control" placeholder="Search" name="search" id="searchterm">
                   <div class="input-group-btn">
-                      <button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                      <button id="searchbtn" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
                   </div>
               </div>
               </form>
@@ -75,7 +82,7 @@
 
             <div class="col-sm-7 col-sm-pull-4">
 
-                <div class="products-table">
+                <div class="products-table col-xs-12">
 
                     <!-- product listings go here-->
 
@@ -94,11 +101,12 @@
                 <span class="glyphicon glyphicon-asterisk small"></span> Mfg date: {manufacturingDate}
                 <span class="glyphicon glyphicon-asterisk small col-xs-offset-1"></span> Exp Date: {expiryDate}
             </p>
-            <p>Price: ${price}</p>
+            <p class="prod_item_price">{price}</p>
         </div>
     </script>
     <script src="js/vendor/jquery-1.11.0.min.js"></script>
     <script src="js/vendor/bootstrap.js"></script>
+    <script src="../js/vendor/moment.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
     <script src="js/common.js"></script>
@@ -115,17 +123,53 @@
             addToCart(parent.data('prodData'));
         });
 
+        $('#searchbtn').on('click', function(){
+            var term = $('#searchterm').val();
+            var onSearchErr = function(){
+                alert("Some error occured while searching for your product. Try again.");
+            };
+            searchProduct(term, function(d){
+                if(d.error){
+                    onSearchErr(d);
+                    return;
+                }
+                var products = (d && d.response && [d.response]) || [];
+                if(products.length){
+                    addProductsToPage(products);
+                } else {
+                    alert("No product found for this search term. Try searching for exact product name.");
+                }
+
+            }, onSearchErr)
+        });
+
         getAllProducts(function(data){
             var products = (data && data.response && data.response.marshallableProduct) || [];
-            var template = $('#product-listing-template').html();
+            addProductsToPage(products);
+        });
 
+        function addProductsToPage(products){
+            $('.products-table').empty();
+            var template = $('#product-listing-template').html();
             for(var i = 0; i < products.length; i++){
                 var prodData = products[i].wrappedProduct;
+
+                if(!prodData){
+                    continue;
+                } else {
+                    if(prodData.manufacturingDate){
+                        prodData.manufacturingDate = new Date(prodData.manufacturingDate).format('mm/dd/yyyy', true);
+                    }
+                    if(prodData.expiryDate){
+                        prodData.expiryDate = new Date(prodData.expiryDate).format('mm/dd/yyyy', true);
+                    }
+                }
+
                 $(strSubstitute(template, prodData))
                         .appendTo($('.products-table'))
                         .data('prodData',prodData);
             }
-        });
+        }
     </script>
     </body>
 </html>
