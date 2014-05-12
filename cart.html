@@ -130,7 +130,7 @@
         <td>{productName}</td>
         <td id="price" data-price="{price}">${price}</td>
         <td>
-            <input type="text" class="itemQuantity" name="quantity" maxlength="2" size="2" value="{quantity}"/>
+            <input type="text" class="itemQuantity" name="quantity" maxlength="4" size="2" value="{quantity}"/>
         </td>
         <td id="total" class="dollar-value">0</td>
         <td>
@@ -169,6 +169,7 @@
     $('.ordergo').on('click', function(){
         placeOrder(function(d){
             console.log("Order placed success", d);
+            alert("You order has been successfully placed.");
             clearCart();
             updateCartCountLable();
             checkNToggleEmptyCartMsg();
